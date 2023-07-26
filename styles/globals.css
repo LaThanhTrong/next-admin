@@ -37,11 +37,11 @@ table.basic{
 }
 
 table.basic thead tr td, table.basic thead tr th{
-    @apply bg-[#f3f4f6] dark:bg-[#374151] font-bold text-xl py-4 px-2
+    @apply bg-[#f3f4f6] dark:bg-[#374151] font-bold text-xl py-4 px-6
 }
 
 table.basic tbody tr td{
-    @apply py-4
+    @apply py-4 px-6
 }
 
 table.basic tr:nth-child(even) td{

@@ -22,7 +22,7 @@ export default function EditProductPage(){
     }, [id])
     return(
         <Layout>
-            <h1 className="text-blue-900 mb-4 text-3xl font-bold">Edit product</h1>
+            <h1 className="text-4xl font-bold mb-5">Edit product</h1>
             {isLoading && (
                 <Spinner fullWidth={true}></Spinner>
             )}

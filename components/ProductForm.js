@@ -29,7 +29,7 @@ export default function ProductForm({_id, title:existingTitle , description:exis
             document.getElementById("titleError").style.display = "block"
             
         }
-        if(price == ""){
+        else if(price == ""){
             document.getElementById("priceError").style.display = "block"
         }
         else{
@@ -88,16 +88,16 @@ export default function ProductForm({_id, title:existingTitle , description:exis
 
     return(
         <form onSubmit={saveProduct}>
-            <label>Product Name: (*)</label>
-            <input type="text" className="border-2 border-[#FFA07A] focus:outline-none w-full mb-2 p-2 rounded-md" placeholder="Product Name (*)" value={title} onChange={ev => setTitle(ev.target.value)}/><br/>
+            <h2 className="font-bold text-xl mb-2">Product Name: (*)</h2>
+            <input type="text" className="bg-inherit border-2 border-[#4b5563] focus:border-[#4f46e5] focus:outline-none w-full mb-2 p-2 rounded-md" placeholder="Product Name (*)" value={title} onChange={ev => setTitle(ev.target.value)}/><br/>
             <span id="titleError" className="hidden text-red-500">Product name is required</span>
-            <label>Category:</label><br></br>
-        
-            <select className="mt-1 block p-2 rounded-md border-2 border-[#FFA07A] focus:outline-none mb-2" value={category}
+    
+            <h2 className="mt-5 font-bold text-xl mb-2">Category:</h2>
+            <select className="bg-inherit mt-1 block p-2 rounded-md border-2 border-[#4b5563] focus:border-[#4f46e5] focus:outline-none mb-2" value={category}
                 onChange={ev => setCategory(ev.target.value)}>
-                <option key="unknown" value="">Uncategorized</option>
+                <option className="dark:bg-[#374151]" key="unknown" value="">Uncategorized</option>
                 {categories.length > 0 && categories.map(c => (
-                    <option key={c._id} value={c._id}>{c.name}</option>
+                    <option className="dark:bg-[#374151]" key={c._id} value={c._id}>{c.name}</option>
                 ))}
             </select>
             {categoriesLoading && (
@@ -106,21 +106,19 @@ export default function ProductForm({_id, title:existingTitle , description:exis
             {propertiesToFill.length > 0 && 
                 propertiesToFill.map(p => (
                     <div key={p.name} className="mb-2">
-                        <label>{p.name[0].toUpperCase()+p.name.substring(1)}:</label>
+                        <label className="text-[#9498a4]">{p.name[0].toUpperCase()+p.name.substring(1)}:</label>
                         <div>
                             {productProperties[p.name] === undefined && setProductProp(p.name, p.values[0])}
-                            <select className="mt-1 block p-1 rounded-md border-2 border-[#FFA07A] focus:outline-none" value={productProperties[p.name]} onChange={ev => setProductProp(p.name, ev.target.value)}>
+                            <select className="bg-inherit mt-1 block p-1 rounded-md border-2 border-[#4b5563] focus:border-[#4f46e5] focus:outline-none" value={productProperties[p.name]} onChange={ev => setProductProp(p.name, ev.target.value)}>
                                 {p.values.map(v => (
-                                    <option key={v} value={v}>{v}</option>
+                                    <option className="dark:bg-[#374151]" key={v} value={v}>{v}</option>
                                 ))}
                             </select>
                         </div>
                     </div>
                 ))
             }
-            <label>
-                Photos:
-            </label>
+            <h2 className="mt-5 font-bold text-xl mb-2">Photos:</h2>
             <div className="mb-2 flex flex-wrap gap-1">
             <ReactSortable list={images} className="flex flex-warp gap-1" setList={updateImagesOrder}>
                 {!!images?.length && images.map(link => (
@@ -144,13 +142,15 @@ export default function ProductForm({_id, title:existingTitle , description:exis
                 <input type="file" onChange={uploadImages} className="hidden"></input>
                 </label>
             </div>
-            <label>Product Description:</label>
-            <textarea rows="8" className="w-full border-2 border-[#FFA07A] focus:outline-none p-2 rounded-md mb-4" placeholder="Description" value={description} onChange={ev => setDescription(ev.target.value)}></textarea>
-            <label>Product Price: (*)</label>
-            <input type="number" className="border-2 border-[#FFA07A] focus:outline-none w-full mb-1 p-2 rounded-md" placeholder="Price (*)" value={price} onChange={ev => setPrice(ev.target.value)} /><br/>
+
+            <h2 className="mt-5 font-bold text-xl mb-2">Product Description:</h2>
+            <textarea rows="8" className="bg-inherit w-full border-2 border-[#4b5563] focus:border-[#4f46e5] focus:outline-none p-2 rounded-md mb-4" placeholder="Description" value={description} onChange={ev => setDescription(ev.target.value)}></textarea>
+            
+            <h2 className="font-bold text-xl mb-2">Product Price: (*)</h2>
+            <input type="number" className="bg-inherit border-2 border-[#4b5563] focus:border-[#4f46e5] focus:outline-none w-full mb-1 p-2 rounded-md" placeholder="Price (*)" value={price} onChange={ev => setPrice(ev.target.value)} /><br/>
             <span id="priceError" className="hidden text-red-500">Product price is required</span>
-            <button type="button" onClick={() => setGoToProducts(true)} className="bg-gray-500 p-2 px-4 rounded-lg text-white">Cancel</button>
-            <button type="submit" className="bg-blue-900 p-2 px-4 rounded-lg text-white mt-4 ml-2">Save</button>
+            <button type="button" onClick={() => setGoToProducts(true)} className="bg-gray-500 hover:bg-gray-400 p-2 px-4 rounded-lg text-white">Cancel</button>
+            <button type="submit" className="bg-[#4f46e5] hover:bg-[#564fe6] p-2 px-4 rounded-lg text-white mt-4 ml-2">Save</button>
         </form>
     )
 }

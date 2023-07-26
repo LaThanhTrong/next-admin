@@ -9,7 +9,10 @@ export default async function handle(req,res){
     
     if(req.method === "POST"){
         const {uemail, userName, userPassword} = req.body;
-        const ecrypted = hash.sha512().update(userPassword).digest('hex')
+        let ecrypted;
+        if(userPassword.length > 0){
+            ecrypted = hash.sha512().update(userPassword).digest('hex')
+        }
         if(await Uadmin.findOne({uemail})){
             res.status(400).json({message:'User Admin already exists!'})
         }

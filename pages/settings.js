@@ -56,20 +56,25 @@ function SettingsPage({swal}){
     }
 
     async function saveSettings(){
-        setIsLoading(true)
-        await axios.put('/api/settings',{
-            name: 'featuredProductId',
-            value: featuredProductId,
-        })
-        await axios.put('/api/settings',{
-            name: 'shippingFee',
-            value: shippingFee,   
-        })
-        setIsLoading(false)
-        await swal.fire({
-            icon: 'success',
-            title: 'Settings saved',
-        })
+        if(shippingFee === ""){
+            document.getElementById('shippingFee').style.display = "block"
+        }
+        else{
+            setIsLoading(true)
+            await axios.put('/api/settings',{
+                name: 'featuredProductId',
+                value: featuredProductId,
+            })
+            await axios.put('/api/settings',{
+                name: 'shippingFee',
+                value: shippingFee,   
+            })
+            setIsLoading(false)
+            await swal.fire({
+                icon: 'success',
+                title: 'Settings saved',
+            })
+        }
     }
 
     return(
@@ -80,19 +85,28 @@ function SettingsPage({swal}){
             )}
             {!isLoading && (
                 <>
-                    <label>Featured Product</label>
-                    <select value={featuredProductId} onChange={ev => setFeaturedProductId(ev.target.value)}>
-                        {products.length > 0 && products.map(product => (
-                            <option key={product._id} value={product._id}>{product.title}</option>
-                        ))}
-                    </select>
-                    <label>Shipping Price (in vnd)</label>
-                    <input type="number" value={shippingFee} onChange={ev => setShippingFee(ev.target.value)} />
-                    <div>
-                        <button onClick={saveSettings}>Save settings</button>
-                    </div> 
+                    <div className="border-2 border-[#4b5563] py-8 px-5 rounded-md mb-5">
+                        <div className="flex items-center gap-5 mb-5">
+                            <h2 className="font-bold text-xl">Featured Product</h2>
+                            <select className="dark:bg-[#1f2938] border-2 border-[#d1d5db] focus:border-[#FFA07A] dark:border-[#4b5563] dark:focus:border-[#536ced] focus:outline-none p-2 rounded-md" value={featuredProductId} onChange={ev => setFeaturedProductId(ev.target.value)}>
+                                {products.length > 0 && products.map(product => (
+                                    <option className="dark:bg-[#374151]" key={product._id} value={product._id}>{product.title}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="flex items-center gap-5 mb-5">
+                            <h2 className="font-bold text-xl">Shipping Price (in vnd)</h2>
+                            <input className="dark:bg-[#1f2938] border-2 border-[#d1d5db] dark:border-[#4b5563] focus:border-[#FFA07A] dark:focus:border-[#536ced] focus:outline-none p-2 rounded-md" type="number" value={shippingFee} onChange={ev => setShippingFee(ev.target.value)} />
+                        </div>
+                        <div id="shippingFee" className="hidden text-red-500 mb-3">Shipping Price is required</div>
+                        <div>
+                            <button className="bg-[#4f46e5] p-2 px-4 rounded-lg text-white" onClick={saveSettings}>Save settings</button>
+                        </div> 
+                    </div>
+                    
                     <div className="flex items-center gap-4">
-                        <h1 className="text-black dark:text-white">Toggle Light/Dark mode</h1>
+                        <h1 className="text-black dark:text-white font-bold text-xl">Toggle Light/Dark mode</h1>
                         {renderThemeChanger()}
                     </div>
                 </>

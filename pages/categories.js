@@ -10,6 +10,8 @@ function Categories({swal}){
     const [name, setName] = useState('')
     const [parentCategory, setParentCategory] = useState('')
     const [categories, setCategories] = useState([])
+    const [allCategories, setAllCategories] = useState([])
+    const [searchCategory, setSearchCategory] = useState("")
     const [properties, setProperties] = useState([])
     const [isLoading, setIsLoading] = useState(false)
 
@@ -28,17 +30,25 @@ function Categories({swal}){
        fetchCategories()
     },[])
 
+    useEffect(() => {
+        setCategories(allCategories.filter(category => category.name.toLowerCase().includes(searchCategory.toLowerCase())))
+    },[searchCategory])
+
     function fetchCategories(){
         setIsLoading(true)
         axios.get('/api/categories').then(result =>{
+            setAllCategories(result.data)
             setCategories(result.data)
             setIsLoading(false)
         })
     }
     async function saveCategory(ev){
         ev.preventDefault()
-        if(name == ""){
+        if(name === ""){
             document.getElementById("nameError").style.display = "block"
+        }
+        else if(properties.map(p => p.name).includes("") || properties.map(p => p.values).includes("")){
+            document.getElementById("propsError").style.display = "block"
         }
         else{
             const data = {name, parentCategory, properties:properties.map(p => ({name: p.name, values: p.values.replace(/\s*,\s*/g, ",").trim().split(',')}))}
@@ -124,24 +134,30 @@ function Categories({swal}){
                 <span id="nameError" className="hidden text-red-500">Category name is required</span>
                 <div className="mb-2 mt-3">
                     <h2 className="font-bold text-xl mb-2">Properties:</h2>
-                    <button type="button" onClick={addProperty} className="dark:bg-[#374151] bg-white border-2 border-[#d1d5db] dark:border-none text-sm py-2 px-4 rounded-md flex justify-center">Add new property</button>
+                    <button type="button" onClick={addProperty} className="dark:bg-[#374151] hover:dark:bg-[#424a56] bg-white hover:bg-gray-100 border-2 border-[#d1d5db] dark:border-none text-sm py-2 px-4 rounded-md flex justify-center">Add new property</button>
                     {properties.length > 0 && properties.map((property,index) => (
                         <div key={index} className="flex gap-2 mt-2">
                             <input type="text" className="w-full dark:bg-[#1f2938] border-2 border-[#d1d5db] dark:border-[#4b5563] focus:border-[#FFA07A] dark:focus:border-[#536ced] focus:outline-none p-2 rounded-md" value={property.name} onChange={ev => handlePropertyNameChange(index, property, ev.target.value)} placeholder="Property name"></input>
-                            <input type="text" className="w-[338px] dark:bg-[#1f2938] border-2 border-[#d1d5db] dark:border-[#4b5563] focus:border-[#FFA07A] dark:focus:border-[#536ced] focus:outline-none p-2 rounded-md" value={property.values} onChange={ev => handlePropertyValuesChange(index, property, ev.target.value)} placeholder="Property values, comma seperated"></input>
+                            <input type="text" className="w-full dark:bg-[#1f2938] border-2 border-[#d1d5db] dark:border-[#4b5563] focus:border-[#FFA07A] dark:focus:border-[#536ced] focus:outline-none p-2 rounded-md" value={property.values} onChange={ev => handlePropertyValuesChange(index, property, ev.target.value)} placeholder="Property values, comma seperated"></input>
                             <button type="button" className="bg-rose-600 p-1 rounded-lg text-white" onClick={() => removeProperty(index)}>Remove</button>
                         </div>
                     ))}
+                    <div id="propsError" className="hidden text-red-500 mt-2">One or more properties name or value is required</div>
                 </div>
                 <div className="flex gap-1 mt-4">
                     {editedCategory && (
-                        <button type="button" onClick={() => {setEditedCategory(null), setName(''), setParentCategory(''), setProperties([])}} className="bg-gray-500 p-2 px-4 rounded-lg text-white">Cancel</button>
+                        <button type="button" onClick={() => {setEditedCategory(null), setName(''), setParentCategory(''), setProperties([]), document.getElementById("propsError").style.display = "none"}} className="bg-gray-500 p-2 px-4 rounded-lg text-white">Cancel</button>
                     )}
                     <button type="submit" className="bg-[#4f46e5] p-2 px-4 rounded-lg text-white">Save</button>
                 </div>
             </form>
+            
             {!editedCategory && (
                 <div>
+                    <div className="mt-8 flex justify-between">
+                        <h2 className="font-bold text-xl mb-2">Available categories:</h2>
+                        <input className="w-[300px] py-2 px-3 rounded-lg bg-inherit border-2 outline-none border-[#4b5563] focus:border-[#4f46e5]" type="text" onChange={ev => setSearchCategory(ev.target.value)} placeholder="Search for Categories..."></input>
+                    </div>
                     <table className="mt-4 basic text-center">
                     <colgroup>
                         <col style={{ width: '40%' }} />
@@ -194,11 +210,11 @@ function Categories({swal}){
                 <ReactPaginate
                     marginPagesDisplayed={3}
                     breakLabel="..."
-                    nextLabel="Next"
+                    nextLabel=">"
                     onPageChange={handlePageClick}
                     pageRangeDisplayed={3}
                     pageCount={pageCount}
-                    previousLabel="Previous"
+                    previousLabel="<"
                     renderOnZeroPageCount={null}
                     containerClassName={'pagination flex'}
                     // pageClassName={'page-item'}
