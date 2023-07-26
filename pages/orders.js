@@ -1,8 +1,10 @@
+import PDFFile from "@/components/Invoices";
 import Layout from "@/components/Layout";
 import Spinner from "@/components/Spinner";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 
 export default function OrdersPage(){
     const [orders, setOrders] = useState([])
@@ -46,7 +48,8 @@ export default function OrdersPage(){
                     <col style={{ width: '160px' }} />
                     <col style={{ width: '100px' }} />
                     <col style={{ width: '300px' }} />
-                    <col style={{ width: '150px' }} />
+                    <col style={{ width: '180px' }} />
+                    <col style={{ width: '100px' }} />
                 </colgroup>
                 <thead>
                     <tr>
@@ -55,6 +58,7 @@ export default function OrdersPage(){
                         <th>Paid</th>
                         <th>Recipient</th>
                         <th>Products</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,11 +95,16 @@ export default function OrdersPage(){
                                 Contact: {order.phoneNumber} 
                             </td>
                             <td>
-                                {order.line_items.map(l => (
-                                    <div key={l}>
+                                {order.line_items.map((l,i) => (
+                                    <div key={i}>
                                         {l.price_data?.product_data.name} x {l.quantity}<br />
                                     </div>
                                 ))}
+                            </td>
+                            <td>
+                                <PDFDownloadLink document={<PDFFile order={order} />} fileName="invoice">
+                                    {({loading}) => (loading ? <button className="bg-black">Loading Document...</button> : <button className="bg-black">Download</button> )}
+                                </PDFDownloadLink>
                             </td>
                         </tr>
                     ))}
