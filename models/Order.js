@@ -7,6 +7,8 @@ const OrderSchema = new Schema({
     address: String,
     phoneNumber: String,
     paid: Boolean,
+    shippingFee: Number,
+    discount_amount: Number,
 }, {
     timestamps: true
 })

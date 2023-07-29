@@ -34,6 +34,11 @@ const styles = StyleSheet.create({
         marginBottom: 6,
         padding: 3,
     },
+    h3: {
+        fontSize: 15,
+        fontFamily: "Roboto",
+        padding: 3,
+    },
     text: {
         fontSize: 14,
         textAlign: "justify",
@@ -123,7 +128,7 @@ const PDFFile = ({order}) => {
     for (let i = 0; i < n; i++) {
         sum += order.line_items[i].price_data.unit_amount
     }
-    console.log(sum)
+    
     return (
         <Document>
             <Page style={styles.body}>
@@ -135,6 +140,7 @@ const PDFFile = ({order}) => {
                         <Text style={styles.title}>Invoice</Text>
                         <Text style={styles.text}><Text style={styles.grey}>Date created: </Text>{(new Date(order.createdAt)).toLocaleString()}</Text>
                         <Text style={styles.text}><Text style={styles.grey}>Order ID: </Text>{order._id}</Text>
+                        <Text style={styles.text}><Text style={styles.grey}>Status: </Text>{order.paid === true ? "Paid" : "Failed"}</Text>
                     </View>
                 </View>
 
@@ -188,11 +194,29 @@ const PDFFile = ({order}) => {
                         </View>
                     ))}
                     <View style={styles.flex}>
-                        <Text style={styles.h2}>Sumarize Total: </Text>
+                        <Text style={styles.h3}>Sub Total: </Text>
                         <Text style={[styles.text, styles.bold]}>đ{sum.toLocaleString()}</Text>
                     </View>
+                    <View style={styles.flex}>
+                        <Text style={styles.h3}>Shipping Fee: </Text>
+                        <Text style={[styles.text, styles.bold]}>đ{
+                            order.shippingFee ? order.shippingFee.toLocaleString() : "0"}
+                        </Text>
+                    </View>
+                    <View style={styles.flex}>
+                        <Text style={styles.h3}>Discount: </Text>
+                        <Text style={[styles.text, styles.bold]}>đ{
+                            order.discount_amount ? order.discount_amount.toLocaleString() : "0"}
+                        </Text>
+                    </View>
+                    <View style={styles.flex}>
+                        <Text style={styles.h2}>Total: </Text>
+                        <Text style={[styles.text, styles.bold]}>đ{
+                            (sum + (order.shippingFee ? order.shippingFee : 0) - (order.discount_amount ? order.discount_amount : 0)).toLocaleString()}
+                        </Text>
+                    </View>
                 </View>
-                <Text style={styles.stext}>Note: This invoice is NOT included shipping fee or discount coupons during transaction. Please contact us for more details.</Text>
+                
             </Page>
         </Document>
     );
