@@ -61,7 +61,16 @@ export const authOptions = {
         return session
       }
       else{
-        throw new Error('Unauthorized')
+        return false
+      }
+    },
+    async signIn({ user, account, profile, email, credentials }){
+      if(await isUserAdminEmail(user.email) || await isAdminEmail(user.email)){
+        return true
+      }
+      else{
+        
+        return '/'
       }
     }
   }
