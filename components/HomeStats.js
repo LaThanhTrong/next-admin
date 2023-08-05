@@ -1,7 +1,7 @@
 import axios from "axios";
 import Spinner from "./Spinner";
 import { useEffect, useState } from "react";
-import { subHours } from "date-fns";
+import { set, subHours } from "date-fns";
 import { CategoryScale, Chart as ChartJS, Filler, Legend, LineElement, LinearScale, PointElement, Title, Tooltip } from "chart.js";
 import { Line } from "react-chartjs-2";
 
@@ -24,6 +24,22 @@ export default function HomeStats(){
             return isMonth && isWithinDays
         })
         return data
+    }
+    function ordersTotal(orders) {
+        let sum = 0
+        orders.forEach(order => {
+            const {line_items} = order
+            line_items.forEach(li => {
+            const lineSum = li.quantity * li.price_data.unit_amount
+            sum += lineSum
+            })
+        });
+        return sum
+    }
+
+    let datasets = []
+    for(let i = 0; i <= (new Date().getMonth()); i++){
+        datasets.push(ordersTotal(monthDataForCurrentYear(i)))
     }
 
     ChartJS.register(
@@ -49,14 +65,13 @@ export default function HomeStats(){
         return roundedNumber;
     }
 
-    const datas = [ordersTotal(monthDataForCurrentYear(0)), ordersTotal(monthDataForCurrentYear(1)), ordersTotal(monthDataForCurrentYear(2)), ordersTotal(monthDataForCurrentYear(3)), ordersTotal(monthDataForCurrentYear(4)), ordersTotal(monthDataForCurrentYear(5)), ordersTotal(monthDataForCurrentYear(6)), ordersTotal(monthDataForCurrentYear(7)), ordersTotal(monthDataForCurrentYear(8)), ordersTotal(monthDataForCurrentYear(9)), ordersTotal(monthDataForCurrentYear(10)), ordersTotal(monthDataForCurrentYear(11))]
-    const max = roundUpToNearestMultiple(Math.max(...datas),5)
-    let stepSize = max / 5;
+    const max = roundUpToNearestMultiple(Math.max(...datasets),5)
+    const stepSize = max / 5;
     
     const data = {
         labels: ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"],
         datasets:[{
-            data: datas,
+            data: datasets,
             borderColor: 'rgba(0, 119, 290, 0.6)',
             fill: true,
             backgroundColor: 'rgba(0, 119, 290, 0.2)',
@@ -134,19 +149,7 @@ export default function HomeStats(){
           }));
           setIsLoading(false);
         });
-      }, []);
-
-    function ordersTotal(orders) {
-        let sum = 0
-        orders.forEach(order => {
-            const {line_items} = order
-            line_items.forEach(li => {
-            const lineSum = li.quantity * li.price_data.unit_amount
-            sum += lineSum
-            })
-        });
-        return sum
-    }
+    }, []);
 
     if (isLoading) {
         return (

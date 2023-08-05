@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import {Fragment} from 'react';
+import { set } from "date-fns";
 
 export default function Products() {
     const [products, setProducts] = useState([])
@@ -41,6 +42,7 @@ export default function Products() {
     
     useEffect(() => {
         setProducts(allProducts.filter(product => product.title.toLowerCase().includes(searchProduct.toLowerCase())))
+        setItemOffset(0)
     },[searchProduct])
 
     return ( 
@@ -147,14 +149,6 @@ export default function Products() {
                 previousLabel="<"
                 renderOnZeroPageCount={null}
                 containerClassName={'pagination flex'}
-                // pageClassName={'page-item'}
-                // pageLinkClassName={'page-link'}
-                // previousClassName={'page-item'}
-                // previousLinkClassName={'page-link'}
-                // nextClassName={'page-item'}
-                // nextLinkClassName={'page-link'}
-                // breakClassName={'page-item'}
-                // breakLinkClassName={'page-link'}
                 activeLinkClassName={'active'}
             />
         </div>

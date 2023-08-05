@@ -152,10 +152,12 @@ function AdminsPage({swal}){
 
     useEffect(() => {
         setAdminEmails(allAdminEmails.filter(email => email.email.toLowerCase().includes(searchGoogleAdmin.toLowerCase())))
+        setItemOffset(0)
     }, [searchGoogleAdmin])
 
     useEffect(() => {
         setUAdminEmails(allUAdminEmails.filter(email => email.email.toLowerCase().includes(searchUserAdmin.toLowerCase())))
+        setItemOffsetU(0)
     }, [searchUserAdmin])
 
     return(

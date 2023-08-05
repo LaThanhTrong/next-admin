@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { PDFDownloadLink } from "@react-pdf/renderer";
+import { set } from "date-fns";
 
 export default function OrdersPage(){
     const [orders, setOrders] = useState([])
@@ -34,6 +35,7 @@ export default function OrdersPage(){
 
     useEffect(() => {
         setOrders(allOrders.filter(order => order._id.toLowerCase().includes(searchOrder.toLowerCase())))
+        setItemOffset(0)
     },[searchOrder])
 
     return(

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { withSwal } from "react-sweetalert2";
 import ReactPaginate from "react-paginate";
 import Spinner from "@/components/Spinner";
+import { set } from "date-fns";
 
 function Categories({swal}){
     const [editedCategory, setEditedCategory] = useState(null)
@@ -32,6 +33,7 @@ function Categories({swal}){
 
     useEffect(() => {
         setCategories(allCategories.filter(category => category.name.toLowerCase().includes(searchCategory.toLowerCase())))
+        setItemOffset(0)
     },[searchCategory])
 
     function fetchCategories(){
