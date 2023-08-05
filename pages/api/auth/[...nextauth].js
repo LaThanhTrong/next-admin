@@ -61,13 +61,16 @@ export const authOptions = {
         return session
       }
       else{
-        return false
+        throw new Error('Unauthorized')
       }
     }
   }
 }
 
-export default NextAuth(authOptions)
+const authHandler =  NextAuth(authOptions)
+export default async function handler(...params) {
+  await authHandler(...params);
+}
 
 export async function isAdminRequest(req,res){
   const session = await getServerSession(req,res,authOptions)

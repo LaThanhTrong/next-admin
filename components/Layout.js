@@ -1,7 +1,6 @@
 import Nav from "@/components/Nav"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useState } from "react"
-import Logo from "./Logo"
 import Head from "next/head"
 import styles from "../styles/Form.module.css"
 import Image from "next/image"
@@ -33,6 +32,7 @@ export default function Layout({children}) {
     });
   }
   
+  
   if(session){
     return (
       <div className="bg-[#FFA07A] dark:bg-[#1f2938] min-h-screen">
@@ -51,15 +51,10 @@ export default function Layout({children}) {
     )
   }
   return (
-    // <div className={'bg-[#fff9f6] w-screen h-screen flex items-center'}>
-    //     <div className="text-center w-full">
-    //       <button onClick={() => signIn('google')} className="bg-white p-2 px-4 rounded-lg">Login with Google</button>
-    //     </div>
-    // </div>
     <div className="flex h-screen bg-[#ffb090]">
       <div className="m-auto bg-slate-50 rounded-md w-[900px] h-auto grid lg:grid-cols-2">
         <div>
-          <img className="h-full w-full" src="images/template/login.jpg"></img>
+          <img className="h-full w-full" src="/images/template/login.jpg"></img>
         </div>
         <div className="right flex flex-col justify-evenly">
           <div className="text-center py-10">
