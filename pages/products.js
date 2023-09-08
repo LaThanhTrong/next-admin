@@ -75,6 +75,7 @@ export default function Products() {
                         <td>Name</td>
                         <td>Category</td>
                         <td>Description</td>
+                        <td>Quantity</td>
                         <td>Price</td>
                         <td colSpan={2} className="text-center">Action</td>
                     </tr>
@@ -117,6 +118,7 @@ export default function Products() {
                                 </>
                             )}
                             <td>{product.description}</td>
+                            <td>{product.quantity}</td>
                             <td>đ{product.price.toLocaleString()}</td>
                             <td align="center">
                                 <Link className="items-center bg-green-500 hover:bg-green-400 max-w-fit" href={'/products/edit/'+product._id}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

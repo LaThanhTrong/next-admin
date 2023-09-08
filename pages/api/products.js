@@ -16,10 +16,11 @@ export default async function handle(req, res){
     }
 
     if(method === 'POST'){
-        const {title, description, price, images, category, properties} = req.body
+        const {title, description, quantity, price, images, category, properties} = req.body
         const productDoc = await Product.create({
             title,
             description,
+            quantity,
             price,
             images,
             category: category || null,
@@ -29,10 +30,11 @@ export default async function handle(req, res){
     }
 
     if(method === 'PUT'){
-        const {title, description, price, images, category, properties, _id} = req.body
+        const {title, description, quantity, price, images, category, properties, _id} = req.body
         await Product.updateOne({_id}, {
             title, 
             description, 
+            quantity,
             price, 
             images, 
             category: category || null,
