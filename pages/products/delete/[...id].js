@@ -20,6 +20,7 @@ export default function DeleteProductPage(){
     }
     async function deleteProduct(){
         await axios.delete('/api/products?id='+id)
+        await axios.delete('/api/inventory?productId='+id)
         alert('Product deleted successfully!')
         goBack()
     }

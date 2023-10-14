@@ -9,19 +9,22 @@ export default async function handle(req, res){
 
    if (method === 'GET') {
         if (req.query?.id) {
-            res.json(await Product.findOne({_id:req.query.id}));
+            if(req.query.id.match(/^[0-9a-fA-F]{24}$/)){
+                res.json(await Product.findOne({_id:req.query.id}));
+            }
+            else{
+                res.json(null);
+            }
         } else {
             res.json(await Product.find());
         }
     }
 
     if(method === 'POST'){
-        const {title, description, quantity, price, images, category, properties} = req.body
+        const {title, description, images, category, properties} = req.body
         const productDoc = await Product.create({
             title,
             description,
-            quantity,
-            price,
             images,
             category: category || null,
             properties,
@@ -30,12 +33,10 @@ export default async function handle(req, res){
     }
 
     if(method === 'PUT'){
-        const {title, description, quantity, price, images, category, properties, _id} = req.body
+        const {title, description, images, category, properties, _id} = req.body
         await Product.updateOne({_id}, {
             title, 
             description, 
-            quantity,
-            price, 
             images, 
             category: category || null,
             properties,

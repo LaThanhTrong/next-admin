@@ -7,13 +7,29 @@ import { Line } from "react-chartjs-2";
 
 export default function HomeStats(){
     const [orders,setOrders] = useState([])
+    const [orderDetail,setOrderDetail] = useState([])
     const [isLoading,setIsLoading] = useState(false)
     const monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"]
     const months = monthNames[new Date().getMonth()]
     const years = new Date().getFullYear()
 
+    useEffect(() => {
+        setIsLoading(true);
+        axios.get('/api/orders').then(res => {
+            setOrders(res.data.filter(order => {
+                return order.paid === true
+            }));
+            axios.get('/api/orderdetails').then(res => {
+                setOrderDetail(res.data.filter(od => {
+                    return od.order.paid === true    
+                }));
+            })
+            setIsLoading(false);
+        });
+    }, []);
+
     function monthDataForCurrentYear(month){
-        const data = orders.filter(o => {
+        const data = orderDetail.filter(o => {
             const currentDate = new Date();
             const orderDate = new Date(o.createdAt)
             const currentYear = currentDate.getFullYear()
@@ -25,9 +41,11 @@ export default function HomeStats(){
         })
         return data
     }
-    function ordersTotal(orders) {
+    // console.log(monthDataForCurrentYear(9))
+    function ordersTotal(orderDetail) {
+        // console.log(orderDetail)
         let sum = 0
-        orders.forEach(order => {
+        orderDetail.forEach(order => {
             const {line_items} = order
             line_items.forEach(li => {
             const lineSum = li.quantity * li.price_data.unit_amount
@@ -64,10 +82,9 @@ export default function HomeStats(){
         }
         return roundedNumber;
     }
-
+    
     const max = roundUpToNearestMultiple(Math.max(...datasets),5)
     const stepSize = max / 5;
-    
     const data = {
         labels: ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"],
         datasets:[{
@@ -141,16 +158,6 @@ export default function HomeStats(){
         }
     }
 
-    useEffect(() => {
-        setIsLoading(true);
-        axios.get('/api/orders').then(res => {
-          setOrders(res.data.filter(order => {
-            return order.paid === true
-          }));
-          setIsLoading(false);
-        });
-    }, []);
-
     if (isLoading) {
         return (
             <div className="my-4">
@@ -159,14 +166,14 @@ export default function HomeStats(){
         );
     }
 
-    const ordersToday = orders.filter(o => {
+    const ordersToday = orderDetail.filter(o => {
         const orderDate = new Date(o.createdAt)
         const currentDate = new Date()
         const isToday = orderDate.toDateString() === currentDate.toDateString()
         const isAfterMidnight = orderDate.getHours() >= 0
         return isToday && isAfterMidnight
     })
-    const ordersWeek = orders.filter(o => new Date(o.createdAt) > subHours(new Date, 24*7));
+    const ordersWeek = orderDetail.filter(o => new Date(o.createdAt) > subHours(new Date, 24*7));
     const ordersMonth = monthDataForCurrentYear(new Date().getMonth())
 
     return (

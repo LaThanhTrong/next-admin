@@ -4,13 +4,11 @@ import { useEffect, useState } from "react";
 import Spinner from "./Spinner";
 import { ReactSortable } from "react-sortablejs";
 
-export default function ProductForm({_id, title:existingTitle, description:existingDescription, quantity:existingQuantity, price:existingPrice, images:existingImages, category:assignedCategory, properties:assignedProperties}){
+export default function ProductForm({_id, title:existingTitle, description:existingDescription, images:existingImages, category:assignedCategory, properties:assignedProperties}){
     const [title, setTitle] = useState(existingTitle || '');
     const [description, setDescription] = useState(existingDescription || '');
-    const [quantity, setQuantity] = useState(existingQuantity || '');
     const [category, setCategory] = useState(assignedCategory || '')
     const [productProperties, setProductProperties] = useState(assignedProperties || {})
-    const [price, setPrice] = useState(existingPrice || '');
     const [images, setImages] = useState(existingImages || [])
     const [goToProducts,setGoToProducts] = useState(false)
     const [isUploading, setIsUpLoading] = useState(false)
@@ -30,17 +28,8 @@ export default function ProductForm({_id, title:existingTitle, description:exist
             document.getElementById("titleError").style.display = "block"
             
         }
-        else if(quantity == ""){
-            document.getElementById("quantityError").style.display = "block"
-        }
-        else if(quantity < 0){
-            document.getElementById("quantityError2").style.display = "block"
-        }
-        else if(price == ""){
-            document.getElementById("priceError").style.display = "block"
-        }
         else{
-            const data = {title, description, quantity, price, images, category, properties: productProperties}
+            const data = {title, description, images, category, properties: productProperties}
             if(_id){
                 //update
                 await axios.put('/api/products', {...data,_id})
@@ -153,14 +142,6 @@ export default function ProductForm({_id, title:existingTitle, description:exist
             <h2 className="mt-5 font-bold text-xl mb-2">Product Description:</h2>
             <textarea rows="8" className="bg-inherit w-full border-2 border-[#4b5563] focus:border-[#4f46e5] focus:outline-none p-2 rounded-md mb-4" placeholder="Description" value={description} onChange={ev => setDescription(ev.target.value)}></textarea>
 
-            <h2 className="font-bold text-xl mb-2">Product Quantity: (*)</h2>
-            <input type="number" className="bg-inherit border-2 border-[#4b5563] focus:border-[#4f46e5] focus:outline-none w-full mb-1 p-2 rounded-md" placeholder="Quantity (*)" value={quantity} onChange={ev => setQuantity(ev.target.value)} /><br/>
-            <span id="quantityError" className="hidden text-red-500">Product quantity is required</span>
-            <span id="quantityError2" className="hidden text-red-500">Product quantity is invalid</span>
-            
-            <h2 className="font-bold text-xl mb-2">Product Price: (*)</h2>
-            <input type="number" className="bg-inherit border-2 border-[#4b5563] focus:border-[#4f46e5] focus:outline-none w-full mb-1 p-2 rounded-md" placeholder="Price (*)" value={price} onChange={ev => setPrice(ev.target.value)} /><br/>
-            <span id="priceError" className="hidden text-red-500">Product price is required</span>
             <button type="button" onClick={() => setGoToProducts(true)} className="bg-gray-500 hover:bg-gray-400 p-2 px-4 rounded-lg text-white">Cancel</button>
             <button type="submit" className="bg-[#4f46e5] hover:bg-[#564fe6] p-2 px-4 rounded-lg text-white mt-4 ml-2">Save</button>
         </form>

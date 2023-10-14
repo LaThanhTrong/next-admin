@@ -9,6 +9,7 @@ import { set } from "date-fns";
 
 export default function OrdersPage(){
     const [orders, setOrders] = useState([])
+    const [orderDetail, setOrderDetail] = useState([])
     const [allOrders, setAllOrders] = useState([])
     const [searchOrder, setSearchOrder] = useState("")
     const [isLoading, setIsLoading] = useState(false)
@@ -29,6 +30,9 @@ export default function OrdersPage(){
         axios.get('/api/orders').then(response => {
             setAllOrders(response.data)
             setOrders(response.data)
+            axios.get('/api/orderdetails').then(res => {
+                setOrderDetail(res.data)
+            })
             setIsLoading(false)
         })
     }, [])
@@ -73,7 +77,7 @@ export default function OrdersPage(){
                             </td>
                         </tr>
                     )}
-                    {currentItems.length > 0 && currentItems.map(order => (
+                    {currentItems.length > 0 && orderDetail.length > 0 && currentItems.map(order => (
                         <tr key={order._id}>
                             <td>{order._id}</td>
                             <td>{(new Date(order.createdAt)).toLocaleString()}</td>
@@ -97,14 +101,14 @@ export default function OrdersPage(){
                                 Contact: {order.phoneNumber} 
                             </td>
                             <td>
-                                {order.line_items.map((l,i) => (
+                                {orderDetail.filter(od => od.order._id === order._id)[0].line_items.map((l,i) => (
                                     <div key={i}>
                                         {l.price_data?.product_data.name} x {l.quantity}<br />
                                     </div>
                                 ))}
                             </td>
                             <td>
-                                <PDFDownloadLink document={<PDFFile order={order} />} fileName="invoice">
+                                <PDFDownloadLink document={<PDFFile order={order} line_items={orderDetail.filter(od => od.order._id === order._id)[0].line_items} />} fileName="invoice">
                                     {({loading}) => (loading ? <button className="bg-black">Loading Document...</button> : <button className="bg-black">Download</button> )}
                                 </PDFDownloadLink>
                             </td>

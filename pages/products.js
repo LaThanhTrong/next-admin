@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import {Fragment} from 'react';
-import { set } from "date-fns";
 
 export default function Products() {
     const [products, setProducts] = useState([])
@@ -63,20 +62,19 @@ export default function Products() {
         <div className="overflow-auto">
             <table className="basic mt-8">
             <colgroup>
-                <col style={{ width: '300px' }} />
-                <col style={{ width: '200px' }} />
-                <col style={{ width: '300px' }} />
-                <col style={{ width: '200px' }} />
-                <col style={{ width: '140px' }} />
-                <col style={{ width: '140px' }} />
+                <col style={{ width: '16%' }} />
+                <col style={{ width: '20%' }} />
+                <col style={{ width: '10%' }} />
+                <col style={{ width: '35%' }} />
+                <col style={{ width: '9%' }} />
+                <col style={{ width: '10%' }} />
             </colgroup>
                 <thead>
                     <tr>
+                        <td>ID</td>
                         <td>Name</td>
                         <td>Category</td>
                         <td>Description</td>
-                        <td>Quantity</td>
-                        <td>Price</td>
                         <td colSpan={2} className="text-center">Action</td>
                     </tr>
                 </thead>
@@ -92,6 +90,7 @@ export default function Products() {
                     )}
                     {currentItems.map(product => (
                         <tr key={product._id}>
+                            <td>{product._id}</td>
                             <td className="">
                                 <div className="rounded-md flex gap-3 items-center">
                                     <img className="bg-white w-[80px] rounded-md" src={product.images[0]}/>
@@ -118,8 +117,6 @@ export default function Products() {
                                 </>
                             )}
                             <td>{product.description}</td>
-                            <td>{product.quantity}</td>
-                            <td>đ{product.price.toLocaleString()}</td>
                             <td align="center">
                                 <Link className="items-center bg-green-500 hover:bg-green-400 max-w-fit" href={'/products/edit/'+product._id}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
@@ -140,6 +137,7 @@ export default function Products() {
                 </tbody>
             </table>
         </div>
+        
         <div className="mt-3 text-center ml-[-4px]">
             <ReactPaginate
                 marginPagesDisplayed={3}

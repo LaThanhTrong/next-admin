@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { withSwal } from "react-sweetalert2";
 import { useTheme } from "next-themes";
 function SettingsPage({swal}){
-    const [products, setProducts] = useState([])
+    const [inventory, setInventory] = useState([])
     const [featuredProductId, setFeaturedProductId] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [shippingFee, setShippingFee] = useState('')
@@ -44,8 +44,8 @@ function SettingsPage({swal}){
     }, [])
 
     async function fetchAll(){
-        await axios.get('/api/products').then(response => {
-            setProducts(response.data)
+        await axios.get('/api/inventory').then(response => {
+            setInventory(response.data)
         })
         await axios.get('/api/settings?name=featuredProductId').then(response => {
             setFeaturedProductId(response.data.value)
@@ -89,8 +89,8 @@ function SettingsPage({swal}){
                         <div className="flex items-center gap-5 mb-5">
                             <h2 className="font-bold text-xl">Featured Product</h2>
                             <select className="dark:bg-[#1f2938] border-2 border-[#d1d5db] focus:border-[#FFA07A] dark:border-[#4b5563] dark:focus:border-[#536ced] focus:outline-none p-2 rounded-md" value={featuredProductId} onChange={ev => setFeaturedProductId(ev.target.value)}>
-                                {products.length > 0 && products.map(product => (
-                                    <option className="dark:bg-[#374151]" key={product._id} value={product._id}>{product.title}</option>
+                                {inventory.length > 0 && inventory.map(i => (
+                                    <option className="dark:bg-[#374151]" key={i.product._id} value={i.product._id}>{i.product.title}</option>
                                 ))}
                             </select>
                         </div>

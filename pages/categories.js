@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { withSwal } from "react-sweetalert2";
 import ReactPaginate from "react-paginate";
 import Spinner from "@/components/Spinner";
-import { set } from "date-fns";
 
 function Categories({swal}){
     const [editedCategory, setEditedCategory] = useState(null)
