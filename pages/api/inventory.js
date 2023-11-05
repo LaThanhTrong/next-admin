@@ -1,6 +1,7 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import Inventory from "@/models/Inventory";
 import { WishedProduct } from "@/models/WishedProduct";
+import Product from "@/models/Product";
 import { isAdminRequest } from "./auth/[...nextauth]";
 
 export default async function handle(req, res) {
@@ -9,10 +10,10 @@ export default async function handle(req, res) {
     await isAdminRequest(req, res);
 
     if (method === "GET") {
-        if(req.query?.productIDs){
-            res.json(await Inventory.findOne({product: req.query.productIDs}));
+        if (req.query?.productIDs) {
+            res.json(await Inventory.findOne({ product: req.query.productIDs }));
         }
-        else{
+        else {
             res.json(await Inventory.find().populate("product"));
         }
     }
@@ -28,8 +29,8 @@ export default async function handle(req, res) {
     }
 
     if (method === "PUT") {
-        const {id, newQuantity, newPrice} = req.body;
-        await Inventory.updateOne({_id: id}, {
+        const { id, newQuantity, newPrice } = req.body;
+        await Inventory.updateOne({ _id: id }, {
             quantity: newQuantity,
             price: newPrice,
         });
@@ -37,12 +38,12 @@ export default async function handle(req, res) {
     }
 
     if (method === "DELETE") {
-        if(req.query?._id){
+        if (req.query?._id) {
             await WishedProduct.deleteMany({ inventory: req.query._id });
             await Inventory.deleteOne({ _id: req.query._id });
             res.json("ok");
         }
-        else if(req.query?.productId){
+        else if (req.query?.productId) {
             const inventoryId = await Inventory.findOne({ product: req.query.productId });
             await WishedProduct.deleteMany({ inventory: inventoryId._id });
             await Inventory.deleteOne({ product: req.query.productId });
